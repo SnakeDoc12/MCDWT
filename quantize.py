@@ -23,15 +23,15 @@ parser = argparse.ArgumentParser(description = "Quantize an image\n\n"
 parser.add_argument("-i", "--input", help="Input image", default="../sequences/stockholm/000.png")
 parser.add_argument("-o", "--output", help="Output image", default="/tmp/000.png")
 parser.add_argument("-q", "--q_step", type=int, help="Quantization step", default=32)
-parser.add_argument("-t", "--t", type=int, help="Type of Quantization", default="deadzone")
+parser.add_argument("-t", "--t", help="Type of Quantization", default="deadzone")
 
 args = parser.parse_args()
 
 image = cv2.imread(args.input, -1)
-
+"""
 if __debug__:
     print("Quantizing with step {}".format(args.q_step))
-
+"""
 tmp = image.astype(np.float32)
 tmp -= 32768
 #image = tmp.astype(np.int16)
@@ -48,13 +48,12 @@ tmp -= 32768
 #image *= args.q_step
 #image += ((args.q_step//2)-1)
 
-image = (tmp/args.q_step).astype(np.int16)*args.q_step
 if args.t == "deadzone":
-    image = image.astype(np.int)
+    image = (tmp / q_step).astype(np.int16).astype(np.int)
 elif args.t == "midrise"
-    image = np.floor(image)+0.5
+    image = np.floor(tmp / q_step).astype(np.int16) * q_step + (q_step / 2)
 else:
-    image = np.round(image)
+    image = np.round(tmp / q_step).astype(np.int16) * q_step
 
 tmp = image.astype(np.float32)
 tmp += 32768
