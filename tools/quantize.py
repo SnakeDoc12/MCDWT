@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from IPython.display import display, Math, Latex
 import os
 import argparse
 try:
@@ -22,6 +23,7 @@ parser = argparse.ArgumentParser(description = "Quantize an image\n\n"
 parser.add_argument("-i", "--input", help="Input image", default="../sequences/stockholm/000.png")
 parser.add_argument("-o", "--output", help="Output image", default="/tmp/000.png")
 parser.add_argument("-q", "--q_step", type=int, help="Quantization step", default=32)
+parser.add_argument("-t", "--t", type=str, help="Type of Quantization", default="deadzone")
 
 args = parser.parse_args()
 
@@ -47,14 +49,21 @@ tmp -= 32768
 #image += ((args.q_step//2)-1)
 
 image = (tmp/args.q_step).astype(np.int16)*args.q_step
-
-if __debug__:
-    print("Max value at output: {}".format(np.amax(image)))
-    print("Min value at output: {}".format(np.amin(image)))
+if args.t == "deadzone":
+    image = image.astype(np.int)
+    print("Se ejecuta deadzone")
+elif args.t == "midrise":
+    image = np.floor(image)+0.5
+    print("Se ejecuta midrise")
+else:
+    image = np.round(image)
+    print("Se ejecuta midthreat")
 
 tmp = image.astype(np.float32)
 tmp += 32768
 image = tmp.astype(np.uint16)
 
 cv2.imwrite(args.output, image)
+
+
 
