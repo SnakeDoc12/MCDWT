@@ -49,7 +49,7 @@ tmp -= 32768
 #image += ((args.q_step//2)-1)
 
 if args.t == "deadzone":
-    image = (tmp / args.q_step).astype(np.int16).astype(np.int)
+    image = (tmp / args.q_step).astype(np.int16) * args.q_step
 elif args.t == "midrise":
     image = np.floor(tmp / args.q_step).astype(np.int16) * args.q_step + (args.q_step / 2)
 else:
