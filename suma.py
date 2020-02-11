@@ -69,7 +69,9 @@ class Sumando():
         original = "/tmp/"+str(q)+"/original/"+"{:03d}".format(imagen)+".png"
         x = cv2.imread(original, -1)
         y = cv2.imread(cuantizada, -1)
-        MSE = skimage.metrics.mean_squared_error(x, y)
+        error = np.sum((x - y) ** 2)
+        error /= float(A.shape[0] * A.shape[1])
+        #MSE = skimage.metrics.mean_squared_error(x, y)
         return MSE
     def AddSizes(path = "/tmp/", N = 5):
         tamanoTotal = 0.0
