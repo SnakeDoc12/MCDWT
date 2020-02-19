@@ -56,6 +56,19 @@ class Sumando():
         path_archivo_reducido = os.path.join(path,"HH{:03d}".format(imagen)+".png")
         tamanoTotalNuevo += os.stat(path_archivo_reducido).st_size
         return tamanoTotalNuevo
+    def GetPesosSubbandasGOP(self,cuantificador, q,banda,imagen,gop):
+	#/tmp/{gop}/{q_step}/cuantificadas/{imagen}/{banda}/inversas/
+        path = "/tmp/"+str(gop)+"/"+str(q)+"/cuantificadas/"+str(imagen)+"/"	+banda+"/inversas/"
+        tamanoTotalNuevo = 0.0        
+        path_archivo_reducido = os.path.join(path,"LL{:03d}".format(imagen)+".png")
+        tamanoTotalNuevo += os.stat(path_archivo_reducido).st_size
+        path_archivo_reducido = os.path.join(path,"LH{:03d}".format(imagen)+".png")
+        tamanoTotalNuevo += os.stat(path_archivo_reducido).st_size
+        path_archivo_reducido = os.path.join(path,"HL{:03d}".format(imagen)+".png")
+        tamanoTotalNuevo += os.stat(path_archivo_reducido).st_size
+        path_archivo_reducido = os.path.join(path,"HH{:03d}".format(imagen)+".png")
+        tamanoTotalNuevo += os.stat(path_archivo_reducido).st_size
+        return tamanoTotalNuevo
     def GetMSE(self,cuantificador,imagen,q):
         cuantizada = "/tmp/"+str(q)+"/"+cuantificador+"/inversas/"+"{:03d}".format(imagen)+".png"
         original = "/tmp/"+str(q)+"/original/"+"{:03d}".format(imagen)+".png"
@@ -66,6 +79,15 @@ class Sumando():
     def GetMSESubbanda(self,cuantificador,imagen,q,banda):
         cuantizada = "/tmp/"+str(q)+"/"+cuantificador+"/"+banda+"/inversas/"+"{:03d}".format(imagen)+".png"
         original = "/tmp/"+str(q)+"/original/"+"{:03d}".format(imagen)+".png"
+        x = cv2.imread(original, -1)
+        y = cv2.imread(cuantizada, -1)
+        MSE = skimage.metrics.mean_squared_error(x, y)
+        return MSE
+    def GetMSEGOP(self,cuantificador,imagen,q,banda,gop):
+	#/tmp/{gop}/{q_step}/cuantificadas/{imagen}/{banda}/inversas/
+        cuantizada = "/tmp/"+str(gop)+"/"+str(q)+"/cuantificadas/"+str(imagen)+"/"+banda+"/inversas/"+"{:03d}".format(imagen)+".png"
+	#/tmp/{gop}/{q_step}/mcdwt/
+        original = "/tmp/"+str(gop)+"/"+str(q)+"/mcdwt/"+"{:03d}".format(imagen)+".png"
         x = cv2.imread(original, -1)
         y = cv2.imread(cuantizada, -1)
         MSE = skimage.metrics.mean_squared_error(x, y)
